@@ -1,24 +1,113 @@
-import { Logger } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { NestFactory } from '@nestjs/core'
+#!/usr/bin/env node
 
-import { AppModule } from './app.module'
+/**
+ * Commander for launch and testing requests for joke resource
+ *
+ * @see README-jokets.md for details
+ *
+ * @packageDocumentation
+ */
+import chalk = require('chalk')
+import commander = require('commander')
+import inquirer = require('inquirer')
 
-const logger = new Logger('AppBootstrap')
+import joke from './joke'
+import test from './test'
 
-const DEFAULT_APP_HORT = 'localhost'
-const DEFAULT_APP_PORT = 3000
+commander.version('1.0.0').description('Jokes reader and tester')
 
-async function bootstrap(): Promise<void> {
-    const app = await NestFactory.create(AppModule)
+commander
+    .command('run')
+    .option('-n, --num <jokesnum>', 'Number of jokes')
+    .option('-d, --delay <delay>', 'Delay between messages (seconds)')
+    .option('-a, --asyncawait', 'Promise or AsyncAwait (default: promise)')
+    .option('-p, --prompt', 'Prompt for category')
+    .description('Run jokes logging')
+    .action((options) => {
+        if (!options.prompt) {
+            joke.RunJokes(
+                undefined,
+                options.num,
+                options.delay,
+                options.asyncawait,
+            )
+        } else {
+            const categorys: string[] = [
+                'Programming',
+                'Miscellaneous',
+                'Dark',
+                'Pun',
+                'Spooky',
+                'Christmas',
+            ]
 
-    const configService = app.get(ConfigService)
+            console.log('what kind of jokes do you foresee?')
+            console.log('Enter the number and press the enter key')
 
-    const port = configService.get('PORT') || DEFAULT_APP_PORT
-    const hostname = configService.get('HOST') || DEFAULT_APP_HORT
+            for (let i = 1; i <= categorys.length; i++) {
+                console.log(`${i  } - ${  categorys[i - 1]}`)
+            }
 
-    await app.listen(port, hostname, () =>
-        logger.log(`Server running at ${hostname}:${port}`),
-    )
-}
-bootstrap()
+            inquirer
+                .prompt([
+                    {
+                        type: 'input',
+                        name: 'category',
+                        message: 'Enter number: ',
+                    },
+                ])
+                .then((inputs: { category?: number }) => {
+                    let url
+                    if (
+                        inputs.category &&
+                        inputs.category > 0 &&
+                        inputs.category <= categorys.length
+                    ) {
+                        url =
+                            `https://v2.jokeapi.dev/joke/${ 
+                            categorys[inputs.category - 1]}`
+                        console.log(
+                            `Ok, you like jokes about  ${ 
+                                categorys[inputs.category - 1]}`,
+                        )
+                    }
+                    joke.RunJokes(
+                        url,
+                        options.num,
+                        options.delay,
+                        options.asyncawait,
+                    )
+                })
+        }
+    })
+
+commander
+    .command('test')
+    .option('-n, --num <jokesnum>', 'Number of jokes')
+    .option('-a, --async', 'Is async test (default: sync')
+    .description('Speed test')
+    .action((options) => {
+        if (options.async) {
+            console.log(chalk.blue(`test.test.as${  options.num}`))
+            test.test.as(options.num)
+        } else {
+            test.test.sy(options.num)
+        }
+    })
+
+commander.command('hi').action(() => {
+    inquirer
+        .prompt([
+            {
+                type: 'string',
+                name: 'name',
+                default: 'Yorick',
+                message: 'Who are you? : ',
+            },
+        ])
+        .then((my: { name?: string }): void => {
+            console.log(chalk.blue(`Ну привет, ${  my.name}`))
+        })
+})
+
+commander.parse(process.argv)
