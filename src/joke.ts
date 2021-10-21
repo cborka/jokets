@@ -1,7 +1,6 @@
+import { Logger } from '@nestjs/common'
 import axios from 'axios'
 import chalk = require('chalk')
-// const axios = require('axios');
-// chalk = require('chalk');
 
 /**
  * Content of a joke
@@ -29,9 +28,11 @@ let jokesDelay = 2
  * @param counter - Serial number of this joke
  */
 function ShowJoke(joke: Joke, counter: number = jokesCounter): void {
+    let _logger = new Logger()
+
     if (counter) {
-console.log(chalk.blue(counter))
-}
+        _logger.verbose(chalk.blue(counter))
+    }
 
     if (joke.type === 'twopart') {
         console.log(chalk.red(joke.setup))
