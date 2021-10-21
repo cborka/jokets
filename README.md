@@ -1,50 +1,37 @@
-# NestJS boilerplate application
+# Joke Ts
+####Jokes reader and tester
 
-## Branches
-- **[master](https://github.com/i-link-pro-team/nestjs-boilerplate/tree/master): Only NestJS**
-- [typeorm+postgres](https://github.com/i-link-pro-team/nestjs-boilerplate/tree/typeorm+postgres): NestJS + PostgreSQL + TypeORM
-- [mongoose+mongo](https://github.com/i-link-pro-team/nestjs-boilerplate/tree/mongoose+mongo): NestJS + MongoDB + Mongoose
+    Usage:
+    node dist/main [options] [command]
 
-## Features
-* Node v14.17.1
-* [Conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.3/)
-* ESLint
-* Launch scripts (prebuild, build, start, test, etc.)
-* Precommit prettier
-* VSCode debug launcher
-* Strict ruled tsconfig.json
+    Options:
+      -V, --version   output the version number
+      -h, --help      display help for command
 
-## Installation
+    Commands:
+      run [options]   Run jokes logging
+      test [options]  Speed test
+      help [command]  display help for command
+      
+####The program does two things:
+#####1. Displays a specified number of jokes at a specified time interval. 
 
-```bash
-$ npm install
-```
+    Usage: node dist/main run [options]
 
-## Running the app
+    Runs jokes logging
 
-```bash
-# if your default nodeJS version is not v14.17.1
-$ nvm use 
+    Options:
+      -n, --num <jokesnum>  Number of jokes
+      -d, --delay <delay>   Delay between messages (seconds)
+      -a, --asyncawait      Promise or AsyncAwait (default: promise)
+      -p, --prompt          Prompt for category
+      -h, --help            display help for command
 
-# development
-$ npm run start
+#####2. Tests the speed of access to a resource in synchronous and asynchronous versions.
 
-# watch mode
-$ npm run start:dev
+    Usage: node dist/main test [options]
 
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+    Options:
+      -n, --num <jokesnum>  Number of jokes
+      -a, --async           Is async test (default: sync)
+      -h, --help            display help for command

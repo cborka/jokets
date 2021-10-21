@@ -3,7 +3,7 @@
 /**
  * Commander for launch and testing requests for joke resource
  *
- * @see README-jokets.md for details
+ * @see README.md for details
  *
  * @packageDocumentation
  */
